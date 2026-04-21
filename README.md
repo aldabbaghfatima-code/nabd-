@@ -12,3 +12,4 @@
 2. نسخ `.env.example` إلى `.env.local` وإضافة `GEMINI_API_KEY`
 3. `npm run dev`
 4. فتح `http://localhost:3000`
+# nabd-
