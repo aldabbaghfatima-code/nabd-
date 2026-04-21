@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #0d6e6e;
+  --color-primary-dark: #0a5a5a;
+  --color-primary-light: #e6f2f2;
+}
+
+@layer base {
+  html {
+    direction: rtl;
+    font-family: var(--font-sans);
+  }
+  body {
+    @apply bg-[#f8fafc] text-slate-900;
+  }
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+  .dark aside {
+    @apply !bg-slate-900 !border-slate-800;
+  }
+  .dark aside a,
+  .dark aside span {
+    @apply !text-slate-400;
+  }
+  .dark aside a.text-white,
+  .dark aside a.bg-primary {
+    @apply !text-white;
+  }
+  .dark aside .border-t {
+    @apply !border-slate-800;
+  }
+  .dark header {
+    @apply !bg-slate-900/80 !border-slate-800;
+  }
+  .dark header input {
+    @apply !bg-slate-800 !border-slate-700 !text-slate-200 !placeholder-slate-500;
+  }
+  .dark header span,
+  .dark header div {
+    @apply !text-slate-300;
+  }
+  .dark .bg-white {
+    @apply !bg-slate-900;
+  }
+  .dark .bg-slate-50 {
+    @apply !bg-slate-800;
+  }
+  .dark .bg-\[\#f8fafc\] {
+    @apply !bg-slate-950;
+  }
+  .dark .border-slate-100,
+  .dark .border-slate-200 {
+    @apply !border-slate-700;
+  }
+  .dark .border-slate-50 {
+    @apply !border-slate-800;
+  }
+  .dark .text-slate-900 {
+    @apply !text-slate-100;
+  }
+  .dark .text-slate-700 {
+    @apply !text-slate-300;
+  }
+  .dark .text-slate-600 {
+    @apply !text-slate-400;
+  }
+  .dark .text-slate-500 {
+    @apply !text-slate-400;
+  }
+  .dark .text-slate-400 {
+    @apply !text-slate-500;
+  }
+  .dark .text-slate-300 {
+    @apply !text-slate-600;
+  }
+  .dark .bg-blue-50 {
+    @apply !bg-blue-900/30;
+  }
+  .dark .bg-green-50 {
+    @apply !bg-green-900/30;
+  }
+  .dark .bg-amber-50 {
+    @apply !bg-amber-900/30;
+  }
+  .dark .bg-red-50 {
+    @apply !bg-red-900/30;
+  }
+  .dark .bg-primary-light {
+    @apply !bg-primary/20;
+  }
+  .dark input,
+  .dark select,
+  .dark textarea {
+    @apply !bg-slate-800 !border-slate-700 !text-slate-200 !placeholder-slate-500;
+  }
+  .dark table thead tr {
+    @apply !border-slate-700;
+  }
+  .dark table tbody tr {
+    @apply !border-slate-800;
+  }
+  .dark .shadow-sm {
+    @apply !shadow-none;
+  }
+  .dark .bg-slate-100 {
+    @apply !bg-slate-800;
+  }
+  .dark .bg-slate-900 {
+    @apply !bg-slate-950;
+  }
+}
