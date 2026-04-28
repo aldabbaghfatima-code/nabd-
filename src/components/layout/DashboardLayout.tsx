@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useLang } from '../../lib/i18n';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -54,6 +55,12 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useLang();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -126,13 +133,13 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
         </nav>
 
         <div className="p-4 border-t border-slate-100">
-          <Link 
-            to="/login" 
-            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-all"
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-all w-full"
           >
             <LogOut size={20} />
             {t('sidebar_logout')}
-          </Link>
+          </button>
         </div>
       </aside>
 
@@ -287,11 +294,11 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                 className="flex items-center gap-3 hover:bg-slate-50 rounded-xl px-2 py-1.5 transition-colors"
               >
                 <div className="text-left">
-                  <div className="text-sm font-bold text-slate-900">{t('header_doctorName')}</div>
-                  <div className="text-[10px] text-slate-400 font-bold text-right">{t('header_doctorRole')}</div>
+                  <div className="text-sm font-bold text-slate-900">{user?.name || t('header_doctorName')}</div>
+                  <div className="text-[10px] text-slate-400 font-bold text-right">{user?.organization || t('header_doctorRole')}</div>
                 </div>
                 <img 
-                  src="https://picsum.photos/seed/doctor/100/100" 
+                  src={user?.avatar || "https://picsum.photos/seed/doctor/100/100"} 
                   alt="Profile" 
                   className="w-10 h-10 rounded-xl object-cover border-2 border-primary/10"
                   referrerPolicy="no-referrer"
@@ -301,9 +308,9 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
               {showProfile && (
                 <div className="absolute top-full mt-3 left-0 w-56 bg-white rounded-2xl border border-slate-100 shadow-2xl overflow-hidden z-50">
                   <div className="p-4 border-b border-slate-100">
-                    <div className="text-sm font-bold text-slate-900">{t('header_doctorName')}</div>
-                    <div className="text-[11px] text-slate-400">{t('header_doctorRole')}</div>
-                    <div className="text-[11px] text-primary mt-1">dr.sara@nabd.com</div>
+                    <div className="text-sm font-bold text-slate-900">{user?.name || t('header_doctorName')}</div>
+                    <div className="text-[11px] text-slate-400">{user?.organization || t('header_doctorRole')}</div>
+                    <div className="text-[11px] text-primary mt-1">{user?.email || 'dr.sara@nabd.com'}</div>
                   </div>
                   <div>
                     <button
@@ -314,7 +321,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                       الإعدادات
                     </button>
                     <button
-                      onClick={() => { navigate('/login'); setShowProfile(false); }}
+                      onClick={() => { handleLogout(); setShowProfile(false); }}
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-right text-sm font-bold text-red-500"
                     >
                       <LogOut size={16} />

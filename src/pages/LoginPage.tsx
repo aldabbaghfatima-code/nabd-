@@ -3,23 +3,45 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Activity, Mail, Lock, Eye, EyeOff, ArrowLeft, ShieldCheck, User, Building2, Phone } from 'lucide-react';
 import { useLang } from '../lib/i18n';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginPage() {
   const { t } = useLang();
+  const { login, register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '', organization: '' });
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard');
+    setIsLoading(true);
+    setError('');
+    try {
+      await login(formData.email, formData.password);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'بيانات الاعتماد غير صحيحة');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim() || !formData.password || formData.password !== formData.confirmPassword) return;
-    navigate('/dashboard');
+    setIsLoading(true);
+    setError('');
+    try {
+      await register(formData.name, formData.email, formData.password, formData.confirmPassword);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'حدث خطأ أثناء التسجيل');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetForm = () => {
@@ -56,6 +78,10 @@ export default function LoginPage() {
               )}
             </AnimatePresence>
           </motion.div>
+
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm font-bold">{error}</div>
+          )}
 
           <AnimatePresence mode="wait">
             {isRegister ? (
@@ -160,11 +186,10 @@ export default function LoginPage() {
 
                 <button 
                   type="submit"
-                  disabled={formData.password !== formData.confirmPassword || !formData.name.trim() || !formData.email.trim()}
+                  disabled={isLoading || formData.password !== formData.confirmPassword || !formData.name.trim() || !formData.email.trim()}
                   className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                  {t('login_createButton')}
+                  {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div> : <><ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />{t('login_createButton')}</>}
                 </button>
               </motion.form>
             ) : (
@@ -212,10 +237,10 @@ export default function LoginPage() {
 
                 <button 
                   type="submit"
-                  className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group"
+                  disabled={isLoading}
+                  className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                  {t('login_button')}
+                  {isLoading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div> : <><ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />{t('login_button')}</>}
                 </button>
               </motion.form>
             )}
